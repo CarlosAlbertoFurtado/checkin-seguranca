@@ -33,7 +33,7 @@ export default function CheckInButton() {
         disabled={isCheckedIn || isLoading}
       >
         <span className="button-text">
-          {isLoading ? "Processando..." : (isCheckedIn ? "Check-in Feito ✓" : "Estou Vivo")}
+          {isLoading ? "Processando..." : (isCheckedIn ? "Check-in Feito ✓" : "Estou Bem")}
         </span>
       </button>
       {isCheckedIn && (

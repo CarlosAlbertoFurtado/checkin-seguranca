@@ -108,7 +108,7 @@ export default function CheckInHistory() {
                 <span className="timeline-date">{formatDate(checkin.created_at)}</span>
                 <span className="timeline-time">{formatTime(checkin.created_at)}</span>
               </div>
-              <span className="timeline-status">✓ Vivo</span>
+              <span className="timeline-status">✓ Bem</span>
             </div>
           ))}
         </div>
