@@ -1,0 +1,639 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+
+:root {
+  --bg-color: #050505;
+  --text-color: #ffffff;
+  --text-muted: #888888;
+  --accent-color: #10b981; /* Green for alive */
+  --accent-glow: rgba(16, 185, 129, 0.4);
+  --btn-bg: #111111;
+  --btn-border: #333333;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Layout Classes */
+.main-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 2rem;
+  text-align: center;
+}
+
+.header {
+  width: 100%;
+  padding: 1.5rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 1.2rem;
+  letter-spacing: -0.5px;
+}
+
+.settings-link {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s ease;
+}
+
+.settings-link:hover {
+  color: var(--text-color);
+}
+
+/* Button Component Styles */
+.button-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 4rem;
+}
+
+.glow-effect {
+  position: absolute;
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+  border-radius: 50%;
+  z-index: 0;
+  opacity: 0.5;
+  animation: pulse 4s ease-in-out infinite;
+  transition: all 0.5s ease;
+}
+
+.glow-checked {
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  animation: none;
+  opacity: 0.2;
+}
+
+.check-in-button {
+  position: relative;
+  z-index: 1;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background-color: var(--btn-bg);
+  border: 1px solid var(--btn-border);
+  color: var(--text-color);
+  font-size: 1.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 2px 10px rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.check-in-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.05), transparent);
+  transform: skewX(-25deg);
+  transition: 0.5s;
+}
+
+.check-in-button:hover:not(:disabled) {
+  transform: translateY(-5px) scale(1.02);
+  border-color: var(--accent-color);
+  box-shadow: 0 15px 40px rgba(16, 185, 129, 0.2), inset 0 2px 10px rgba(255, 255, 255, 0.1);
+}
+
+.check-in-button:hover:not(:disabled)::before {
+  left: 200%;
+}
+
+.check-in-button:active:not(:disabled) {
+  transform: translateY(2px) scale(0.98);
+}
+
+.check-in-button.checked {
+  background-color: #1a1a1a;
+  border-color: #222;
+  color: var(--text-muted);
+  cursor: default;
+  box-shadow: inset 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.check-in-button.loading {
+  background-color: #111;
+  border-color: #444;
+  color: var(--text-muted);
+  cursor: wait;
+  animation: pulseLoading 1.5s infinite;
+}
+
+@keyframes pulseLoading {
+  0% { opacity: 0.7; }
+  50% { opacity: 1; }
+  100% { opacity: 0.7; }
+}
+
+.button-text {
+  position: relative;
+  z-index: 2;
+}
+
+.status-message {
+  margin-top: 2rem;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  animation: fadeIn 0.5s ease-out forwards;
+  opacity: 0;
+}
+
+.hero-text {
+  margin-bottom: 2rem;
+}
+
+.hero-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(to right, #fff, #888);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-subtitle {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  max-width: 400px;
+  line-height: 1.5;
+}
+
+/* Animations */
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.4;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0.4;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== History Component ===== */
+.history-container {
+  width: 100%;
+  max-width: 500px;
+  margin-top: 4rem;
+  padding-top: 3rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.history-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.streak-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(255, 165, 0, 0.1);
+  border: 1px solid rgba(255, 165, 0, 0.2);
+  padding: 0.4rem 0.8rem;
+  border-radius: 2rem;
+}
+
+.streak-fire {
+  font-size: 1rem;
+}
+
+.streak-count {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #ffa500;
+}
+
+.streak-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.history-loading,
+.history-empty {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.history-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.timeline-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  animation: fadeIn 0.5s ease-out forwards;
+  opacity: 0;
+}
+
+.timeline-dot {
+  width: 10px;
+  height: 10px;
+  min-width: 10px;
+  border-radius: 50%;
+  background-color: var(--accent-color);
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
+.timeline-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  text-align: left;
+}
+
+.timeline-date {
+  font-size: 0.85rem;
+  color: var(--text-color);
+  text-transform: capitalize;
+}
+
+.timeline-time {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.timeline-status {
+  font-size: 0.8rem;
+  color: var(--accent-color);
+  font-weight: 500;
+}
+
+/* ===== Settings Page ===== */
+.settings-page {
+  justify-content: flex-start;
+  padding-top: 2rem;
+}
+
+.page-header {
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 2rem;
+  text-align: left;
+}
+
+.back-link {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s ease;
+  display: inline-block;
+  margin-bottom: 1rem;
+}
+
+.back-link:hover {
+  color: var(--accent-color);
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(to right, #fff, #888);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.page-subtitle {
+  color: var(--text-muted);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.settings-container {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.settings-section {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+.settings-section-header {
+  margin-bottom: 1.5rem;
+}
+
+.settings-section-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+
+.settings-section-desc {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+/* ===== Contact Form ===== */
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  text-align: left;
+}
+
+.form-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.form-input {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 0.7rem 1rem;
+  color: var(--text-color);
+  font-size: 0.9rem;
+  font-family: 'Inter', sans-serif;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  outline: none;
+}
+
+.form-input:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+}
+
+.form-input::placeholder {
+  color: rgba(255, 255, 255, 0.2);
+}
+
+.btn-add-contact {
+  background: var(--accent-color);
+  color: #000;
+  border: none;
+  border-radius: 10px;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-add-contact:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.btn-add-contact:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.form-message {
+  color: var(--accent-color);
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  animation: fadeIn 0.3s ease;
+}
+
+/* ===== Contact List ===== */
+.contacts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.contact-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  transition: border-color 0.2s ease;
+}
+
+.contact-card:hover {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  text-align: left;
+}
+
+.contact-name {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.contact-email {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.contact-phone {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.btn-delete-contact {
+  background: transparent;
+  border: 1px solid rgba(255, 80, 80, 0.2);
+  color: #ff5050;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-delete-contact:hover {
+  background: rgba(255, 80, 80, 0.1);
+  border-color: rgba(255, 80, 80, 0.4);
+}
+
+.empty-contacts {
+  text-align: center;
+  padding: 1.5rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.empty-contacts .text-muted {
+  font-size: 0.8rem;
+  opacity: 0.6;
+  margin-top: 0.4rem;
+}
+
+/* ===== Alert Info Cards ===== */
+.alert-info-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.alert-info-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.alert-info-icon {
+  font-size: 1.3rem;
+  min-width: 2rem;
+  text-align: center;
+}
+
+.alert-info-card p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-align: left;
+  line-height: 1.5;
+}
+
+.alert-info-card strong {
+  color: #ff5050;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 600px) {
+  .main-layout {
+    padding: 1rem;
+  }
+
+  .hero-title {
+    font-size: 1.8rem;
+  }
+
+  .hero-subtitle {
+    font-size: 0.95rem;
+  }
+
+  .check-in-button {
+    width: 160px;
+    height: 160px;
+    font-size: 1.2rem;
+  }
+
+  .glow-effect {
+    width: 200px;
+    height: 200px;
+  }
+
+  .button-container {
+    margin-top: 2rem;
+  }
+
+  .history-container {
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+  }
+
+  .history-header {
+    flex-direction: column;
+    gap: 0.8rem;
+    align-items: flex-start;
+  }
+
+  .header {
+    padding: 1rem;
+  }
+
+  .settings-section {
+    padding: 1.2rem;
+  }
+
+  .page-title {
+    font-size: 1.5rem;
+  }
+}
