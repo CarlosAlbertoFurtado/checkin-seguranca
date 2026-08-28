@@ -10,7 +10,20 @@ export async function GET() {
     const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate()).toISOString();
     const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1).toISOString();
 
-    // Busca check-ins de HOJE
+    // 1. Verifica se tem algum modo férias ativado
+    const { data: vacationSettings, error: vacationError } = await supabase
+      .from('user_settings')
+      .select('vacation_mode')
+      .eq('vacation_mode', true);
+
+    if (!vacationError && vacationSettings && vacationSettings.length > 0) {
+      return NextResponse.json({
+        status: 'ok',
+        message: 'Modo férias ativado. Nenhum alerta será enviado.',
+      });
+    }
+
+    // 2. Busca check-ins de HOJE
     const { data: todayCheckins, error: checkinError } = await supabase
       .from('checkins')
       .select('*')
