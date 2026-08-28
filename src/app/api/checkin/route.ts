@@ -1,8 +1,10 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase-server';
 
 export async function POST(request: Request) {
   try {
+    const supabase = await createClient();
+
     // Pega o usuário logado
     const { data: { session } } = await supabase.auth.getSession();
     

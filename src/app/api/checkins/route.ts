@@ -1,14 +1,21 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase-server';
 
-// GET — Busca todos os check-ins do banco, ordenados do mais recente ao mais antigo
 export async function GET() {
   try {
+    const supabase = await createClient();
+    const { data: { session } } = await supabase.auth.getSession();
+
+    if (!session) {
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
+    }
+
     const { data, error } = await supabase
       .from('checkins')
       .select('*')
+      .eq('user_name', session.user.email)
       .order('created_at', { ascending: false })
-      .limit(30); // Últimos 30 check-ins
+      .limit(30);
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });

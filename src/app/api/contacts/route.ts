@@ -1,9 +1,13 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase-server';
 
 // GET — Busca todos os contatos de emergência
 export async function GET() {
   try {
+    const supabase = await createClient();
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
+
     const { data, error } = await supabase
       .from('contacts')
       .select('*')
@@ -29,6 +33,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Nome e email são obrigatórios' }, { status: 400 });
     }
 
+    const supabase = await createClient();
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
+
     const { data, error } = await supabase
       .from('contacts')
       .insert([{ name, email, phone: phone || null }])
@@ -53,6 +61,10 @@ export async function DELETE(request: Request) {
     if (!id) {
       return NextResponse.json({ error: 'ID é obrigatório' }, { status: 400 });
     }
+
+    const supabase = await createClient();
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
 
     const { error } = await supabase
       .from('contacts')
