@@ -38,6 +38,9 @@ export default function CadastroPage() {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          emailRedirectTo: undefined,
+        },
       });
 
       if (error) {
@@ -47,9 +50,24 @@ export default function CadastroPage() {
         throw error;
       }
 
+      // Tenta fazer login automaticamente após o cadastro
+      const { error: loginError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (loginError) {
+        // Se não conseguiu logar automaticamente, redireciona pro login
+        setIsError(false);
+        setMessage('Conta criada! Faça login para continuar.');
+        setTimeout(() => router.push('/login'), 2000);
+        return;
+      }
+
       setIsError(false);
-      setMessage('Conta criada com sucesso! Redirecionando para o login...');
-      setTimeout(() => router.push('/login'), 2000);
+      setMessage('Conta criada e login realizado! Redirecionando...');
+      router.push('/');
+      router.refresh();
     } catch (error: any) {
       setIsError(true);
       setMessage(error.message || 'Ocorreu um erro ao criar a conta.');
