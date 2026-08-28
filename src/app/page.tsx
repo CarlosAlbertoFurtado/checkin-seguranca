@@ -1,7 +1,7 @@
 import CheckInButton from "@/components/CheckInButton";
 import CheckInHistory from "@/components/CheckInHistory";
 import SosButton from "@/components/SosButton";
-import EmergencyContacts from "@/components/EmergencyContacts";
+import AlertSettings from "@/components/AlertSettings";
 import VacationModeSettings from "@/components/VacationModeSettings";
 
 export default async function Home() {
@@ -17,7 +17,7 @@ export default async function Home() {
       <div className="settings-section">
         <h2 style={{ fontSize: '1.2rem', marginBottom: '1rem' }}>⚙️ Configurações</h2>
         <VacationModeSettings />
-        <EmergencyContacts />
+        <AlertSettings />
       </div>
     </main>
   );
