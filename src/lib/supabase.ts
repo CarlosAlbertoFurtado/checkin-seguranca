@@ -1,7 +1,8 @@
-import { createClient } from '@supabase/supabase-js';
+import { createBrowserClient } from '@supabase/ssr';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
-// Criamos um único cliente do Supabase para usar em todo o app
-export const supabase = createClient(supabaseUrl, supabaseKey);
+// Usar createBrowserClient garante que o Supabase guarde a sessão em Cookies 
+// e não apenas no LocalStorage, permitindo que o Middleware no servidor consiga ler.
+export const supabase = createBrowserClient(supabaseUrl, supabaseKey);
