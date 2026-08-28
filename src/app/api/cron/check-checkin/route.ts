@@ -56,13 +56,26 @@ export async function GET() {
         resolved: false,
       }]);
 
-    // TODO: Enviar email real para os contatos (integração com Resend/SendGrid)
-    // Por enquanto, apenas registramos o alerta no banco
-    console.log('🚨 ALERTA: Sem check-in hoje! Contatos a notificar:', contacts);
+    // Enviar email real para os contatos usando a Resend
+    const { sendAlertEmail } = await import('@/lib/email');
+    
+    let sentCount = 0;
+    for (const contact of contacts) {
+      const result = await sendAlertEmail({
+        to: contact.email,
+        contactName: contact.name,
+        userName: 'Usuário', // No futuro, pegaremos o nome do usuário logado
+        missedDate: today.toLocaleDateString('pt-BR'),
+      });
+      
+      if (result.success) sentCount++;
+    }
+
+    console.log(`🚨 ALERTA: Sem check-in hoje! ${sentCount} email(s) enviado(s) com sucesso.`);
 
     return NextResponse.json({
       status: 'alert',
-      message: `ALERTA: Sem check-in hoje! ${contacts.length} contato(s) seriam notificados.`,
+      message: `ALERTA: Sem check-in hoje! ${sentCount} email(s) enviado(s).`,
       contacts: contacts.map(c => ({ name: c.name, email: c.email })),
     });
 

@@ -3,12 +3,18 @@ import { supabase } from '@/lib/supabase';
 
 export async function POST(request: Request) {
   try {
+    // Pega o usuário logado
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (!session) {
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
+    }
+
     // Insere um novo registro na tabela 'checkins' do Supabase
-    // O id e created_at serão gerados automaticamente pelo banco
     const { data, error } = await supabase
       .from('checkins')
       .insert([
-        { user_name: 'Usuário Padrão' } // No futuro, podemos pegar isso de um login
+        { user_name: session.user.email } 
       ])
       .select();
 
