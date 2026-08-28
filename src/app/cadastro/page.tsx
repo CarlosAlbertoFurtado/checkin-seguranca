@@ -5,64 +5,54 @@ import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
-export default function LoginPage() {
+export default function CadastroPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [isError, setIsError] = useState(false);
   const router = useRouter();
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setMessage('');
     setIsError(false);
 
+    if (password !== confirmPassword) {
+      setIsError(true);
+      setMessage('As senhas não coincidem.');
+      setIsLoading(false);
+      return;
+    }
+
+    if (password.length < 6) {
+      setIsError(true);
+      setMessage('A senha precisa ter pelo menos 6 caracteres.');
+      setIsLoading(false);
+      return;
+    }
+
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
       });
 
       if (error) {
-        if (error.message === 'Invalid login credentials') {
-          throw new Error('Email ou senha incorretos.');
+        if (error.message.includes('already registered')) {
+          throw new Error('Este email já está cadastrado. Tente fazer login.');
         }
         throw error;
       }
 
-      setMessage('Login realizado! Redirecionando...');
-      router.push('/');
-      router.refresh();
-    } catch (error: any) {
-      setIsError(true);
-      setMessage(error.message || 'Ocorreu um erro ao tentar fazer login.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleForgotPassword = async () => {
-    if (!email) {
-      setIsError(true);
-      setMessage('Digite seu email acima primeiro.');
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/auth/reset-password`,
-      });
-
-      if (error) throw error;
-
       setIsError(false);
-      setMessage('Email de recuperação enviado! Verifique sua caixa de entrada.');
+      setMessage('Conta criada com sucesso! Redirecionando para o login...');
+      setTimeout(() => router.push('/login'), 2000);
     } catch (error: any) {
       setIsError(true);
-      setMessage(error.message || 'Erro ao enviar email de recuperação.');
+      setMessage(error.message || 'Ocorreu um erro ao criar a conta.');
     } finally {
       setIsLoading(false);
     }
@@ -71,10 +61,10 @@ export default function LoginPage() {
   return (
     <main className="main-layout">
       <div className="login-container">
-        <h1 className="login-title">Demumu</h1>
-        <p className="login-subtitle">Faça login para gerenciar sua segurança.</p>
+        <h1 className="login-title">Criar Conta</h1>
+        <p className="login-subtitle">Cadastre-se para usar o Demumu.</p>
         
-        <form onSubmit={handleLogin} className="login-form">
+        <form onSubmit={handleSignUp} className="login-form">
           <div className="form-group">
             <label className="form-label">Email</label>
             <input 
@@ -92,9 +82,22 @@ export default function LoginPage() {
             <input 
               type="password" 
               className="form-input" 
-              placeholder="Sua senha"
+              placeholder="Mínimo 6 caracteres"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
+              minLength={6}
+            />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">Confirmar Senha</label>
+            <input 
+              type="password" 
+              className="form-input" 
+              placeholder="Repita a senha"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               required
               minLength={6}
             />
@@ -103,18 +106,15 @@ export default function LoginPage() {
           <button 
             type="submit" 
             className="btn-login" 
-            disabled={isLoading || !email || !password}
+            disabled={isLoading || !email || !password || !confirmPassword}
           >
-            {isLoading ? 'Entrando...' : 'Entrar'}
+            {isLoading ? 'Criando...' : 'Criar Conta'}
           </button>
         </form>
 
         <div className="login-links">
-          <button onClick={handleForgotPassword} className="link-button">
-            Esqueceu a senha?
-          </button>
-          <Link href="/cadastro" className="link-button">
-            Criar uma conta
+          <Link href="/login" className="link-button">
+            Já tenho uma conta
           </Link>
         </div>
 

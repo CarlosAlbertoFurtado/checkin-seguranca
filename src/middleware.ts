@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 
 export async function middleware(request: NextRequest) {
   // Rotas que NÃO precisam de login
-  const publicRoutes = ['/login', '/auth', '/api/cron/check-checkin'];
+  const publicRoutes = ['/login', '/cadastro', '/auth', '/api/cron/check-checkin'];
   const isPublicRoute = publicRoutes.some(route => request.nextUrl.pathname.startsWith(route));
 
   if (isPublicRoute) {
